@@ -22,13 +22,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.example.michael.bumpy.Model.Driver;
+
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 public class MainActivity extends Activity implements
-        NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
-
+        NfcAdapter.CreateNdefMessageCallback {
+    Driver driver;
     EditText textIn;
     EditText textOut;
     private static final String TAG = "MainActivity";
@@ -41,6 +43,7 @@ public class MainActivity extends Activity implements
         setContentView(R.layout.activity_main);
         textIn = (EditText) findViewById(R.id.info);
         textOut = (EditText)findViewById(R.id.textout);
+        driver = Driver.getInstance();
 
         Log.d(TAG, "onCreate: ");
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -54,8 +57,13 @@ public class MainActivity extends Activity implements
             Toast.makeText(MainActivity.this,
                     "Set Callback(s)",
                     Toast.LENGTH_LONG).show();
-            nfcAdapter.setNdefPushMessageCallback(this, this);
-            nfcAdapter.setOnNdefPushCompleteCallback(this, this);
+            try {
+                AccidentDetailsActivity activity = new AccidentDetailsActivity();
+                nfcAdapter.setNdefPushMessageCallback(this, activity);
+            }
+            catch (Exception ex){
+
+            }
         }
     }
 
@@ -84,15 +92,9 @@ public class MainActivity extends Activity implements
     }
 
     @Override
-    public void onNdefPushComplete(NfcEvent event) {
-        Log.d(TAG, "onNdefPushComplete: ");
-    }
-
-    @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
         Log.d(TAG, "createNdefMessage: ");
-        String stringOut = textIn.getText().toString();
-        byte[] bytesOut = stringOut.getBytes();
+        byte[] bytesOut = driver.getId().getBytes();
 
         NdefRecord ndefRecordOut = new NdefRecord(
                 NdefRecord.TNF_MIME_MEDIA,
