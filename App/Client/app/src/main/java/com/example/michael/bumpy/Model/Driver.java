@@ -20,7 +20,7 @@ public class Driver {
     }
 
     private Driver(){
-        id = String.valueOf(new Random().nextInt(100));
+        id = "a";
     }
 
     public void setId(String id) {
