@@ -29,7 +29,7 @@ import java.util.Locale;
 public class MainActivity extends Activity implements
         NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
 
-    TextView textIn;
+    EditText textIn;
     EditText textOut;
     private static final String TAG = "MainActivity";
 
@@ -39,7 +39,7 @@ public class MainActivity extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textIn = (TextView)findViewById(R.id.info);
+        textIn = (EditText) findViewById(R.id.info);
         textOut = (EditText)findViewById(R.id.textout);
 
         Log.d(TAG, "onCreate: ");
@@ -73,7 +73,7 @@ public class MainActivity extends Activity implements
             NdefRecord[] inNdefRecords = inNdefMessage.getRecords();
             NdefRecord NdefRecord_0 = inNdefRecords[0];
             String inMsg = new String(NdefRecord_0.getPayload());
-            textIn.setText(inMsg);
+            textOut.setText(inMsg);
         }
     }
 
@@ -91,7 +91,7 @@ public class MainActivity extends Activity implements
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
         Log.d(TAG, "createNdefMessage: ");
-        String stringOut = textOut.getText().toString();
+        String stringOut = textIn.getText().toString();
         byte[] bytesOut = stringOut.getBytes();
 
         NdefRecord ndefRecordOut = new NdefRecord(
