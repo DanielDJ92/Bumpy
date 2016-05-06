@@ -8,9 +8,6 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
-import android.nfc.Tag;
-import android.nfc.tech.Ndef;
-import android.nfc.tech.NdefFormatable;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,28 +15,45 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
-import android.provider.Settings.Secure;
 import com.example.michael.bumpy.Model.Driver;
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Locale;
 
-public class MainActivity extends Activity implements
+public class MainActivity extends AppCompatActivity implements
         NfcAdapter.CreateNdefMessageCallback {
     private Driver driver;
     private static final String TAG = "MainActivity";
+    private boolean nfcWorking;
 
-    NfcAdapter nfcAdapter;
+    private NfcAdapter nfcAdapter;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.my_accidents: {
+                Intent intent = new Intent(this, MyAccidentsActivity.class);
+                startActivity(intent);
+
+                return true;
+            }
+            case R.id.edit_details: {
+                Intent intent = new Intent(this, EditDetailsActivity.class);
+                startActivity(intent);
+
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        nfcWorking = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         driver = Driver.getInstance();
+//        Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
+//        startActivity(newIntent);
         Intent intent = getIntent();
         String action = intent.getAction();
 
@@ -59,25 +73,32 @@ public class MainActivity extends Activity implements
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
     public void onClickListener(View v)
     {
-        Log.d(TAG, "onCreate: ");
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (!nfcWorking) {
+            nfcWorking = true;
+            Log.d(TAG, "onCreate: ");
+            nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
-        if(nfcAdapter==null){
-            Toast.makeText(MainActivity.this,
-                    "nfcAdapter==null, no NFC adapter exists",
-                    Toast.LENGTH_LONG).show();
-        }
-        else{
-            Toast.makeText(MainActivity.this,
-                    "Touch a near device!",
-                    Toast.LENGTH_LONG).show();
-            try {
-                nfcAdapter.setNdefPushMessageCallback(this, this);
-            }
-            catch (Exception ex){
+            if (nfcAdapter == null) {
+                Toast.makeText(MainActivity.this,
+                        "nfcAdapter==null, no NFC adapter exists",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(MainActivity.this,
+                        "Touch a near device!",
+                        Toast.LENGTH_LONG).show();
+                try {
+                    nfcAdapter.setNdefPushMessageCallback(this, this);
+                } catch (Exception ex) {
 
+                }
             }
         }
     }
