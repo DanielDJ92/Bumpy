@@ -92,18 +92,7 @@ public class MainActivity extends AppCompatActivity implements
                     "Touch a near device!",
                     Toast.LENGTH_LONG).show();
             try {
-
-                byte[] bytesOut = driver.getId().getBytes();
-
-                NdefRecord ndefRecordOut = new NdefRecord(
-                        NdefRecord.TNF_MIME_MEDIA,
-                        "text/plain".getBytes(),
-                        new byte[] {},
-                        bytesOut);
-
-                NdefMessage ndefMessageout = new NdefMessage(ndefRecordOut);
-                nfcAdapter.setNdefPushMessage(ndefMessageout, this, this);
-                //nfcAdapter.setNdefPushMessageCallback(this, this);
+                nfcAdapter.setNdefPushMessageCallback(this, this);
             }
             catch (Exception ex){
 
