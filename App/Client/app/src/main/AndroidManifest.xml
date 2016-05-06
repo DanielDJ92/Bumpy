@@ -26,10 +26,6 @@
         
         <activity android:name=".MainActivity">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
@@ -39,7 +35,14 @@
 
         </activity>
         <activity android:name=".AccidentDetailsActivity" />
-        <activity android:name=".MyAccidentsActivity"></activity>
+        <activity android:name=".MyAccidentsActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

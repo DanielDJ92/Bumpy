@@ -40,6 +40,23 @@ public class MainActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         driver = Driver.getInstance();
+        Intent intent = getIntent();
+        String action = intent.getAction();
+
+        if(action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)){
+            Parcelable[] parcelables =
+                    intent.getParcelableArrayExtra(
+                            NfcAdapter.EXTRA_NDEF_MESSAGES);
+            NdefMessage inNdefMessage = (NdefMessage)parcelables[0];
+            NdefRecord[] inNdefRecords = inNdefMessage.getRecords();
+            NdefRecord NdefRecord_0 = inNdefRecords[0];
+            String inMsg = new String(NdefRecord_0.getPayload());
+
+            Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
+            newIntent.putExtra("secondDriver", inMsg);
+            startActivity(newIntent);
+            finish();
+        }
     }
 
     public void onClickListener(View v)
@@ -57,7 +74,6 @@ public class MainActivity extends Activity implements
                     "Touch a near device!",
                     Toast.LENGTH_LONG).show();
             try {
-                AccidentDetailsActivity activity = new AccidentDetailsActivity();
                 nfcAdapter.setNdefPushMessageCallback(this, this);
             }
             catch (Exception ex){
@@ -96,6 +112,7 @@ public class MainActivity extends Activity implements
 
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
+
         Log.d(TAG, "createNdefMessage: ");
         byte[] bytesOut = driver.getId().getBytes();
 
