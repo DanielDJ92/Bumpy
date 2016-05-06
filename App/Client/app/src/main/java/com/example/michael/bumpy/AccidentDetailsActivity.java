@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -88,16 +89,14 @@ public class AccidentDetailsActivity extends AppCompatActivity {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Thread thread = new Thread(new Runnable(){
-                    public void run(){
-                        uploadFile();
-                    }
-                });
-                thread.start();
+                finish();
             }
         });
 
+
         addImageButton = (ImageButton) inflater.inflate(R.layout.image_button, null);
+        final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(400, 400);
+        addImageButton.setLayoutParams(layoutParams);
         imagesLayout.addView(addImageButton,i);
 
         addImageButton.setOnClickListener(new View.OnClickListener() {
@@ -106,17 +105,26 @@ public class AccidentDetailsActivity extends AppCompatActivity {
                 // duplicate + button
 //                ImageButton newButton = addImageButton;
 //                newButton.setId(0);
-                ImageButton newButton = (ImageButton) inflater.inflate(R.layout.image_button, null, true);
-                newButton.setMinimumWidth(100);
-                newButton.setMinimumHeight(100);
-                imagesLayout.addView(newButton,i);
-                imagesList.add(newButton);
-                i++;
+
 
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 }
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ImageButton newButton = (ImageButton) inflater.inflate(R.layout.image_button, null, true);
+                        newButton.setLayoutParams(layoutParams);
+                        imagesLayout.addView(newButton,i);
+                        imagesList.add(newButton);
+                        i++;
+                    }
+                }, 2000);
+
+
             }
         });
     }
@@ -255,16 +263,16 @@ public class AccidentDetailsActivity extends AppCompatActivity {
             // Making server call
             try {
                 HttpResponse response = httpclient.execute(httppost);
-            HttpEntity r_entity = response.getEntity();
+                HttpEntity r_entity = response.getEntity();
 
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode == 200) {
-                // Server response
-                responseString = EntityUtils.toString(r_entity);
-            } else {
-                responseString = "Error occurred! Http Status Code: "
-                        + statusCode;
-            }
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == 200) {
+                    // Server response
+                    responseString = EntityUtils.toString(r_entity);
+                } else {
+                    responseString = "Error occurred! Http Status Code: "
+                            + statusCode;
+                }
             }
             catch (Exception ex) {
                 String a = ex.getMessage();

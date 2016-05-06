@@ -3,5 +3,5 @@
     android:id="@+id/addPhoto"
     android:layout_width="100dp"
     android:layout_height="100dp"
-    android:scaleType="fitCenter"
+    android:scaleType="fitXY"
     android:src="@android:drawable/ic_input_add"/>
