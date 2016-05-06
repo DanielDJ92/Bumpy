@@ -64,9 +64,9 @@ public class MainActivity extends AppCompatActivity implements
             NdefRecord NdefRecord_0 = inNdefRecords[0];
             String inMsg = new String(NdefRecord_0.getPayload());
 
-//            Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
-//            newIntent.putExtra("secondDriver", inMsg);
-//            startActivity(newIntent);
+            Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
+            newIntent.putExtra("secondDriver", inMsg);
+            startActivity(newIntent);
             finish();
         }
     }
@@ -92,7 +92,18 @@ public class MainActivity extends AppCompatActivity implements
                     "Touch a near device!",
                     Toast.LENGTH_LONG).show();
             try {
-                nfcAdapter.setNdefPushMessageCallback(this, this);
+
+                byte[] bytesOut = driver.getId().getBytes();
+
+                NdefRecord ndefRecordOut = new NdefRecord(
+                        NdefRecord.TNF_MIME_MEDIA,
+                        "text/plain".getBytes(),
+                        new byte[] {},
+                        bytesOut);
+
+                NdefMessage ndefMessageout = new NdefMessage(ndefRecordOut);
+                nfcAdapter.setNdefPushMessage(ndefMessageout, this, this);
+                //nfcAdapter.setNdefPushMessageCallback(this, this);
             }
             catch (Exception ex){
 
