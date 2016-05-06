@@ -3,6 +3,7 @@ var app         =   express();
 var bodyParser  =   require("body-parser");
 var mongoOp     =   require("./models/mongo");
 var router      =   express.Router();
+var mongoose    =   require("mongoose");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended" : false}));
@@ -26,7 +27,7 @@ router.route("/users")
     .post(function(req,res){
         var response = {};
         var user = new mongoOp();
-        user.userEmail = req.body.password;
+        user.userEmail = req.body.email;
         user.userPassword = req.body.password;
         user.save(function(err){
             if(err) {
@@ -92,6 +93,6 @@ router.route("/users/:id")
     })
 
 app.use('/',router);
-
+mongoose.connect('mongodb://localhost:27017/demoDb');
 app.listen(3000);
 console.log("Listening to PORT 3000");
