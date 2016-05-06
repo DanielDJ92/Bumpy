@@ -31,6 +31,7 @@ public class MainActivity extends Activity implements
 
     TextView textInfo;
     EditText textOut;
+    private static final String TAG = "MainActivity";
 
     NfcAdapter nfcAdapter;
 
@@ -41,12 +42,15 @@ public class MainActivity extends Activity implements
         textInfo = (TextView)findViewById(R.id.info);
         textOut = (EditText)findViewById(R.id.textout);
 
+        Log.d(TAG, "onCreate: ");
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
         if(nfcAdapter==null){
             Toast.makeText(MainActivity.this,
                     "nfcAdapter==null, no NFC adapter exists",
                     Toast.LENGTH_LONG).show();
-        }else{
+        }
+        else{
             Toast.makeText(MainActivity.this,
                     "Set Callback(s)",
                     Toast.LENGTH_LONG).show();
@@ -58,6 +62,7 @@ public class MainActivity extends Activity implements
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume: ");
         Intent intent = getIntent();
         String action = intent.getAction();
         if(action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)){
@@ -75,27 +80,17 @@ public class MainActivity extends Activity implements
     @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
+        Log.d(TAG, "onNewIntent: ");
     }
 
     @Override
     public void onNdefPushComplete(NfcEvent event) {
-
-        final String eventString = "onNdefPushComplete\n" + event.toString();
-        runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(),
-                        eventString,
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-
+        Log.d(TAG, "onNdefPushComplete: ");
     }
 
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
-
+        Log.d(TAG, "createNdefMessage: ");
         String stringOut = textOut.getText().toString();
         byte[] bytesOut = stringOut.getBytes();
 
