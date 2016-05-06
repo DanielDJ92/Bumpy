@@ -112,6 +112,7 @@ public class MainActivity extends Activity implements
 
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
+
         Log.d(TAG, "createNdefMessage: ");
         byte[] bytesOut = driver.getId().getBytes();
 
