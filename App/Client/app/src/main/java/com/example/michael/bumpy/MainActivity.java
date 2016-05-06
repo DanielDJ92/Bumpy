@@ -17,22 +17,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
+import android.provider.Settings.Secure;
 import com.example.michael.bumpy.Model.Driver;
-
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 public class MainActivity extends Activity implements
         NfcAdapter.CreateNdefMessageCallback {
-    Driver driver;
-    EditText textIn;
-    EditText textOut;
+    private Driver driver;
     private static final String TAG = "MainActivity";
 
     NfcAdapter nfcAdapter;
@@ -41,10 +39,11 @@ public class MainActivity extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textIn = (EditText) findViewById(R.id.info);
-        textOut = (EditText)findViewById(R.id.textout);
         driver = Driver.getInstance();
+    }
 
+    public void onClickListener(View v)
+    {
         Log.d(TAG, "onCreate: ");
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
@@ -55,11 +54,11 @@ public class MainActivity extends Activity implements
         }
         else{
             Toast.makeText(MainActivity.this,
-                    "Set Callback(s)",
+                    "Touch a near device!",
                     Toast.LENGTH_LONG).show();
             try {
                 AccidentDetailsActivity activity = new AccidentDetailsActivity();
-                nfcAdapter.setNdefPushMessageCallback(this, activity);
+                nfcAdapter.setNdefPushMessageCallback(this, this);
             }
             catch (Exception ex){
 
@@ -81,7 +80,11 @@ public class MainActivity extends Activity implements
             NdefRecord[] inNdefRecords = inNdefMessage.getRecords();
             NdefRecord NdefRecord_0 = inNdefRecords[0];
             String inMsg = new String(NdefRecord_0.getPayload());
-            textOut.setText(inMsg);
+
+            Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
+            intent.putExtra("secondDriver", inMsg);
+            startActivity(newIntent);
+            finish();
         }
     }
 

@@ -6,9 +6,14 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Parcelable;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.example.michael.bumpy.Model.Accident;
 import com.example.michael.bumpy.Model.Driver;
@@ -28,35 +33,39 @@ import java.io.InputStreamReader;
 public class AccidentDetailsActivity extends AppCompatActivity {
     private String serverUrl = "";
     private Accident accident;
+    private String secondDriver;
+
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    ImageButton addImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.accident_details);
+        Intent intent = getIntent();
+        String secondDriver = intent.getStringExtra("secondDriver");
+        addImage = (ImageButton) findViewById(R.id.addPhoto);
+
+        addImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
+            }
+        });
     }
 
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();
-        String action = intent.getAction();
 
-        if(action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
-            Parcelable[] parcelables =
-                    intent.getParcelableArrayExtra(
-                            NfcAdapter.EXTRA_NDEF_MESSAGES);
+        Accident accident = new Accident(Driver.getInstance().getId(), secondDriver);
+        String result = PostDataToServer(accident);
 
-            NdefMessage inNdefMessage = (NdefMessage)parcelables[0];
-            NdefRecord[] inNdefRecords = inNdefMessage.getRecords();
-            NdefRecord NdefRecord_0 = inNdefRecords[0];
-
-            String secondDriverID = new String(NdefRecord_0.getPayload());
-
-            Accident accident = new Accident(Driver.getInstance().getId(), secondDriverID);
-            String result = PostDataToServer(accident);
-
-            if (result != null){
-                accident.setId(result);
-            }
+        if (result != null){
+            accident.setId(result);
         }
     }
 
@@ -75,8 +84,10 @@ public class AccidentDetailsActivity extends AppCompatActivity {
 
             // 3. build jsonObject
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("firstDriverID", accident.getFirstDriverId());
-            jsonObject.put("secondDriverID", accident.getSecondDriverId());// 4. convert JSONObject to JSON to String
+            jsonObject.put("name", "bla");
+            jsonObject.put("location", "bla");
+            jsonObject.put("my_id", accident.getFirstDriverId());
+            jsonObject.put("opp_id", accident.getSecondDriverId());
             json = jsonObject.toString();
 
             // 5. set json to StringEntity
@@ -120,5 +131,14 @@ public class AccidentDetailsActivity extends AppCompatActivity {
 
         inputStream.close();
         return result;
+
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            addImage.setImageBitmap(imageBitmap);
+        }
     }
 }
