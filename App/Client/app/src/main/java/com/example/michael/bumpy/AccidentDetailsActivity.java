@@ -31,7 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class AccidentDetailsActivity extends AppCompatActivity {
-    private String serverUrl = "";
+    private String serverUrl = "http://10.10.20.145:3000/acc";
     private Accident accident;
     private String secondDriver;
 
