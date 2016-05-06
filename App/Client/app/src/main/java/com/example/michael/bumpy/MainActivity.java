@@ -64,9 +64,9 @@ public class MainActivity extends AppCompatActivity implements
             NdefRecord NdefRecord_0 = inNdefRecords[0];
             String inMsg = new String(NdefRecord_0.getPayload());
 
-//            Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
-//            newIntent.putExtra("secondDriver", inMsg);
-//            startActivity(newIntent);
+            Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
+            newIntent.putExtra("secondDriver", inMsg);
+            startActivity(newIntent);
             finish();
         }
     }
