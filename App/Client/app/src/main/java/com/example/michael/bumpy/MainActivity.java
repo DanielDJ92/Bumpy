@@ -8,26 +8,15 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
-import android.nfc.Tag;
-import android.nfc.tech.Ndef;
-import android.nfc.tech.NdefFormatable;
 import android.os.Parcelable;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
-import android.provider.Settings.Secure;
 import com.example.michael.bumpy.Model.Driver;
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements
         NfcAdapter.CreateNdefMessageCallback {
@@ -61,8 +50,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         driver = Driver.getInstance();
-        Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
-        startActivity(newIntent);
+//        Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
+//        startActivity(newIntent);
         Intent intent = getIntent();
         String action = intent.getAction();
 

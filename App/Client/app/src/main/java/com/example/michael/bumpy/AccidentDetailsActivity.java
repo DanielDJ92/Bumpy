@@ -74,7 +74,6 @@ public class AccidentDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.accident_details);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
         StrictMode.setThreadPolicy(policy);
 
         Intent intent = getIntent();
