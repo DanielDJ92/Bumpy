@@ -8,6 +8,7 @@ import android.nfc.NfcEvent;
 import android.os.Parcelable;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,6 +43,11 @@ public class AccidentDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.accident_details);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+
         Intent intent = getIntent();
         String secondDriver = intent.getStringExtra("secondDriver");
         addImage = (ImageButton) findViewById(R.id.addPhoto);
@@ -100,19 +106,25 @@ public class AccidentDetailsActivity extends AppCompatActivity {
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
 
-            // 8. Execute POST request to the given URL
-            HttpResponse httpResponse = httpclient.execute(httpPost);
+            try {
+                // 8. Execute POST request to the given URL
+                HttpResponse httpResponse = httpclient.execute(httpPost);
 
-            // 9. receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
+                // 9. receive response as inputStream
+                inputStream = httpResponse.getEntity().getContent();
 
-            // 10. convert inputstream to string
-            if(inputStream != null) {
-                result = convertInputStreamToString(inputStream);
+                // 10. convert inputstream to string
+                if(inputStream != null) {
+                    result = convertInputStreamToString(inputStream);
+                }
+                else {
+                    result = "Did not work!";
+                }
             }
-            else {
-                result = "Did not work!";
+            catch (Exception ex){
+                String msg = ex.getMessage();
             }
+
         }
         catch (Exception e)
         {
