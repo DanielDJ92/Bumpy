@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements
         NfcAdapter.CreateNdefMessageCallback {
     private Driver driver;
     private static final String TAG = "MainActivity";
+    private boolean nfcWorking;
 
     private NfcAdapter nfcAdapter;
 
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        nfcWorking = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         driver = Driver.getInstance();
@@ -79,23 +81,24 @@ public class MainActivity extends AppCompatActivity implements
 
     public void onClickListener(View v)
     {
-        Log.d(TAG, "onCreate: ");
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (!nfcWorking) {
+            nfcWorking = true;
+            Log.d(TAG, "onCreate: ");
+            nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
-        if(nfcAdapter==null){
-            Toast.makeText(MainActivity.this,
-                    "nfcAdapter==null, no NFC adapter exists",
-                    Toast.LENGTH_LONG).show();
-        }
-        else{
-            Toast.makeText(MainActivity.this,
-                    "Touch a near device!",
-                    Toast.LENGTH_LONG).show();
-            try {
-                nfcAdapter.setNdefPushMessageCallback(this, this);
-            }
-            catch (Exception ex){
+            if (nfcAdapter == null) {
+                Toast.makeText(MainActivity.this,
+                        "nfcAdapter==null, no NFC adapter exists",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(MainActivity.this,
+                        "Touch a near device!",
+                        Toast.LENGTH_LONG).show();
+                try {
+                    nfcAdapter.setNdefPushMessageCallback(this, this);
+                } catch (Exception ex) {
 
+                }
             }
         }
     }
