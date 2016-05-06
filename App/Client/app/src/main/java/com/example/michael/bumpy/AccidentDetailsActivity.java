@@ -1,37 +1,55 @@
 package com.example.michael.bumpy;
 
+import android.content.Context;
 import android.content.Intent;
-import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
-import android.nfc.NfcAdapter;
-import android.nfc.NfcEvent;
-import android.os.Parcelable;
-import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.StrictMode;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.example.michael.bumpy.Model.Accident;
 import com.example.michael.bumpy.Model.Driver;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.logging.MemoryHandler;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
 
 public class AccidentDetailsActivity extends AppCompatActivity {
     private String serverUrl = "http://10.10.20.145:3000/acc";
@@ -39,7 +57,16 @@ public class AccidentDetailsActivity extends AppCompatActivity {
     private String secondDriver;
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-    ImageButton addImage;
+    ImageButton addImageButton;
+    Button finish;
+    LinearLayout imagesLayout;
+    LayoutInflater inflater;
+
+    File file;
+
+    int i = 0;
+
+    ArrayList imagesList = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +79,41 @@ public class AccidentDetailsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String secondDriver = intent.getStringExtra("secondDriver");
-        addImage = (ImageButton) findViewById(R.id.addPhoto);
+        ImageButton addImage = (ImageButton) findViewById(R.id.addPhoto);
 
-        addImage.setOnClickListener(new View.OnClickListener() {
+//        addImageButton = (ImageButton) findViewById(R.id.addPhoto);
+        imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
+        inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        finish = (Button) findViewById(R.id.finish);
+
+        finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Thread thread = new Thread(new Runnable(){
+                    public void run(){
+                        uploadFile();
+                    }
+                });
+                thread.start();
+            }
+        });
+
+        addImageButton = (ImageButton) inflater.inflate(R.layout.image_button, null);
+        imagesLayout.addView(addImageButton,i);
+
+        addImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // duplicate + button
+//                ImageButton newButton = addImageButton;
+//                newButton.setId(0);
+                ImageButton newButton = (ImageButton) inflater.inflate(R.layout.image_button, null, true);
+                newButton.setMinimumWidth(100);
+                newButton.setMinimumHeight(100);
+                imagesLayout.addView(newButton,i);
+                imagesList.add(newButton);
+                i++;
+
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -64,6 +121,7 @@ public class AccidentDetailsActivity extends AppCompatActivity {
             }
         });
     }
+
 
     protected void onResume() {
         super.onResume();
@@ -152,7 +210,70 @@ public class AccidentDetailsActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            addImage.setImageBitmap(imageBitmap);
+            FileOutputStream out = null;
+            try {
+                out = new FileOutputStream(getFilesDir() + "/new.jpeg", false);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ((ImageButton)imagesList.get(i - 1)).setImageBitmap(imageBitmap);
+
+            Thread thread = new Thread(new Runnable(){
+                public void run(){
+                    uploadFile();
+                }
+            });
+            thread.start();
+//            Uri uri = data.getData();
+//            file = new File(getRealPathFromURI(uri));
         }
     }
+
+    private String uploadFile() {
+        String responseString = null;
+
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost(serverUrl + "/a/pic");
+
+//        try {
+            MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+            File sourceFile = new File(getFilesDir() + "/new.jpeg");
+            //File sourceFile = new File("/storage/emulated/0/Android/data/com.hutchgames.mud/files/al/1454455321_768x1024.jpeg");
+
+            // Adding file data to http body
+            FileBody body = new FileBody(sourceFile);
+            entity.addPart("file", body);
+
+            httppost.setEntity(entity);
+
+            // Making server call
+            try {
+                HttpResponse response = httpclient.execute(httppost);
+            HttpEntity r_entity = response.getEntity();
+
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200) {
+                // Server response
+                responseString = EntityUtils.toString(r_entity);
+            } else {
+                responseString = "Error occurred! Http Status Code: "
+                        + statusCode;
+            }
+            }
+            catch (Exception ex) {
+                String a = ex.getMessage();
+            }
+
+        return responseString;
+
+    }
+
+
 }

@@ -14,30 +14,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/horizontalScrollView"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/finish"
         android:layout_centerHorizontal="true" >
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:id="@+id/imagesLayout"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@android:mipmap/sym_def_app_icon"/>
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@android:mipmap/sym_def_app_icon"/>
-
-            <ImageButton
-                android:id="@+id/addPhoto"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@android:drawable/ic_input_add"/>
+            <!--<ImageButton-->
+                <!--android:id="@+id/addPhoto"-->
+                <!--android:layout_width="100dp"-->
+                <!--android:layout_height="100dp"-->
+                <!--android:scaleType="fitCenter"-->
+                <!--android:src="@android:drawable/ic_input_add"/>-->
 
         </LinearLayout>
 
     </HorizontalScrollView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/finish"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/finish"/>
+
 </RelativeLayout>
