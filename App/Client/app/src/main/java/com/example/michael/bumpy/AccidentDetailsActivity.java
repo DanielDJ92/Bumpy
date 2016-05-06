@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -239,6 +240,10 @@ public class AccidentDetailsActivity extends AppCompatActivity {
             thread.start();
 //            Uri uri = data.getData();
 //            file = new File(getRealPathFromURI(uri));
+        }
+        else if (resultCode == RESULT_CANCELED) {
+            ImageButton ib = (ImageButton) imagesList.get(imagesList.size() - 1);
+            ((ViewGroup) ib.getParent()).removeView(ib);
         }
     }
 
