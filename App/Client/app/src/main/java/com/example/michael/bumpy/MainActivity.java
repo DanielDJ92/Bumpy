@@ -12,6 +12,7 @@ import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.os.Parcelable;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,12 +29,32 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
-public class MainActivity extends Activity implements
+public class MainActivity extends AppCompatActivity implements
         NfcAdapter.CreateNdefMessageCallback {
     private Driver driver;
     private static final String TAG = "MainActivity";
 
-    NfcAdapter nfcAdapter;
+    private NfcAdapter nfcAdapter;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.my_accidents: {
+                Intent intent = new Intent(this, MyAccidentsActivity.class);
+                startActivity(intent);
+
+                return true;
+            }
+            case R.id.edit_details: {
+                Intent intent = new Intent(this, EditDetailsActivity.class);
+                startActivity(intent);
+
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +78,12 @@ public class MainActivity extends Activity implements
             startActivity(newIntent);
             finish();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     public void onClickListener(View v)
