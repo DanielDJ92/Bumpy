@@ -75,11 +75,11 @@ public class Globals {
         return result;
     }
 
-    public static String uploadFile(File file) {
+    public static String uploadFile(File file, String accidentId) {
         String responseString = null;
 
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(serverUrl + "/a/pic");
+        HttpPost httppost = new HttpPost(serverUrl + accidentId + "/pic");
 
 //        try {
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);

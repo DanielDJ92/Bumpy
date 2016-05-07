@@ -212,7 +212,7 @@ public class AccidentDetailsActivity extends AppCompatActivity {
             Thread thread = new Thread(new Runnable(){
                 public void run(){
                     File file = new File(getFilesDir() + fileUri);
-                    String result = Globals.uploadFile(file);
+                    String result = Globals.uploadFile(file, accident.getId());
                 }
             });
             thread.start();
