@@ -114,6 +114,9 @@ public class MyAccidentsActivity extends AppCompatActivity {
                 nameView.setLayoutParams(params);
 
                 tr.addView(nameView);
+                tl.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+                tr = new TableRow(this);
+                tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
                 Button b2 = new Button(this);
                 b2.setText("Opp Driver");
@@ -131,25 +134,6 @@ public class MyAccidentsActivity extends AppCompatActivity {
                     }
                 });
                 tr.addView(b2);
-
-
-                Button b3 = new Button(this);
-                b3.setText("Witnesses");
-                b3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-        /* Add Button to row. */
-                b3.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Intent intent = new Intent(MyAccidentsActivity.this, OppActivity.class);
-                        try {
-                            intent.putExtra("acc_id", rec.getString("acc_id"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        startActivity(intent);
-                    }
-                });
-                tr.addView(b3);
-
 
                 Button b = new Button(this);
                 b.setText("Accident Pics");

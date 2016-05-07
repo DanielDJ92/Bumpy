@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.example.michael.bumpy.Globals.Globals;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -24,7 +26,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 public class OppActivity extends AppCompatActivity {
-    private String mainUrl = "http://10.10.16.151:3000";
+    private String mainUrl = Globals.serverUrl;
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
@@ -42,7 +44,7 @@ public class OppActivity extends AppCompatActivity {
     {
         InputStream inputStream = null;
         String result = "";
-        String serverUrl = mainUrl + "/user/" + opp_id + "/pic";
+        String serverUrl = mainUrl + "user/" + opp_id + "/pic";
 
         try {
 
