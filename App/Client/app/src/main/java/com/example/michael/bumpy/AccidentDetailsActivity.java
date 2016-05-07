@@ -24,9 +24,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.example.michael.bumpy.Globals.Globals;
 import com.example.michael.bumpy.Model.Accident;
 import com.example.michael.bumpy.Model.Driver;
 import com.example.michael.bumpy.Model.Witness;
+import com.google.gson.Gson;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -38,6 +40,7 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -92,7 +95,18 @@ public class AccidentDetailsActivity extends AppCompatActivity {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                sendDetailsActivity();
+
+                JSONObject jsonObject = new JSONObject();
+                try {
+//                    jsonObject.put("description", ((EditText)findViewById(R.id.description)).getText().toString());
+
+                    Gson g = new Gson();
+                    String s = g.toJson(witnessesList);
+                    jsonObject.put("witlist", s);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String result = Globals.postDataToServer(jsonObject, "add/" + accident.getId().toString() + "/wit");
                 finish();
             }
         });
@@ -151,82 +165,21 @@ public class AccidentDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         Accident accident = new Accident(Driver.getInstance().getId(), secondDriver);
-        String result = PostDataToServer(accident);
 
-        if (result != null){
-            accident.setId(result);
-        }
-    }
-
-    protected String PostDataToServer(Accident accident) {
-        InputStream inputStream = null;
-        String result = "";
+        JSONObject jsonObject = new JSONObject();
         try {
-
-            // 1. create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
-
-            // 2. make POST request to the given URL
-            HttpPost httpPost = new HttpPost(serverUrl);
-
-            String json = "";
-
-            // 3. build jsonObject
-            JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", "bla");
             jsonObject.put("location", "bla");
             jsonObject.put("my_id", accident.getFirstDriverId());
             jsonObject.put("opp_id", accident.getSecondDriverId());
-            json = jsonObject.toString();
-
-            // 5. set json to StringEntity
-            StringEntity se = new StringEntity(json);
-
-            // 6. set httpPost Entity
-            httpPost.setEntity(se);
-
-            // 7. Set some headers to inform server about the type of the content
-            httpPost.setHeader("Accept", "application/json");
-            httpPost.setHeader("Content-type", "application/json");
-
-            try {
-                // 8. Execute POST request to the given URL
-                HttpResponse httpResponse = httpclient.execute(httpPost);
-
-                // 9. receive response as inputStream
-                inputStream = httpResponse.getEntity().getContent();
-
-                // 10. convert inputstream to string
-                if(inputStream != null) {
-                    result = convertInputStreamToString(inputStream);
-                }
-                else {
-                    result = "Did not work!";
-                }
-            }
-            catch (Exception ex){
-                String msg = ex.getMessage();
-            }
-
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        catch (Exception e)
-        {
+        String result = Globals.postDataToServer(jsonObject, "acc");
 
+        if (result != null){
+            accident.setId(result);
         }
-
-        return result;
-    }
-
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
