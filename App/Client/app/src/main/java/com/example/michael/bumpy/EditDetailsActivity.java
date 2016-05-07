@@ -84,9 +84,10 @@ public class EditDetailsActivity extends AppCompatActivity {
     }
 
     private void PostImagesToServer(Bitmap drivingLicense, Bitmap carInsurance, Bitmap carLicense) {
-        Globals.uploadFile(GetFileFromBitmap(drivingLicense, "drivingLicense.jpeg"));
-        Globals.uploadFile(GetFileFromBitmap(drivingLicense));
-        Globals.uploadFile(GetFileFromBitmap(drivingLicense));
+        Globals.uploadFile(GetFileFromBitmap(drivingLicense, "drivingLicense.jpeg"), Driver.getInstance().getId(), false);
+        Globals.uploadFile(GetFileFromBitmap(carInsurance, "carInsurance.jpeg"), Driver.getInstance().getId(), false);
+        Globals.uploadFile(GetFileFromBitmap(carLicense, "carLicense.jpeg"), Driver.getInstance().getId(), false);
+        finish();
     }
 
     protected String PostDataToServer(Driver driver) {
