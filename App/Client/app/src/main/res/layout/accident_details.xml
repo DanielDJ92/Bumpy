@@ -9,12 +9,19 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".AccidentDetailsActivity">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textView"
+        android:layout_above="@+id/description"
+        android:id="@+id/bigPhoto"
+        android:src="@android:mipmap/sym_def_app_icon"/>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/horizontalScrollView"
-        android:layout_above="@+id/finish"
+        android:layout_above="@+id/buttons"
         android:layout_centerHorizontal="true" >
 
         <LinearLayout
@@ -23,23 +30,52 @@
             android:id="@+id/imagesLayout"
             android:orientation="horizontal">
 
-            <!--<ImageButton-->
-                <!--android:id="@+id/addPhoto"-->
-                <!--android:layout_width="100dp"-->
-                <!--android:layout_height="100dp"-->
-                <!--android:scaleType="fitCenter"-->
-                <!--android:src="@android:drawable/ic_input_add"/>-->
-
         </LinearLayout>
 
     </HorizontalScrollView>
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/finish"
+        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="@string/finish"/>
+        android:id="@+id/buttons">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/witnesses"
+            android:text="@string/witnesses"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/finish"
+            android:text="@string/finish"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Get Detils from the Area"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:minLines="4"
+        android:hint="Describe the accident here..."
+        android:ems="10"
+        android:id="@+id/description"
+        android:layout_centerVertical="true"
+        android:layout_above="@id/horizontalScrollView"/>
 
 </RelativeLayout>
