@@ -80,11 +80,17 @@ public class Globals {
         return result;
     }
 
-    public static String uploadFile(File file, String accidentId) {
+    public static String uploadFile(File file, String accidentId, boolean isAccident) {
         String responseString = null;
 
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(serverUrl + accidentId + "/pic");
+        HttpPost httppost;
+        if (isAccident) {
+            httppost = new HttpPost(serverUrl + "acc/" + accidentId + "/pic");
+        }
+        else {
+            httppost = new HttpPost(serverUrl + "user/"+ accidentId + "/pic");
+        }
 
 //        try {
         MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
