@@ -13,6 +13,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.example.michael.bumpy.Globals.Globals;
 import com.example.michael.bumpy.Model.Driver;
 
 import org.apache.http.HttpEntity;
@@ -31,7 +32,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 public class AccidentDet extends AppCompatActivity {
-    private String mainUrl = "http://10.10.16.151:3000";
+    private String mainUrl = Globals.serverUrl;
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         String line = "";
