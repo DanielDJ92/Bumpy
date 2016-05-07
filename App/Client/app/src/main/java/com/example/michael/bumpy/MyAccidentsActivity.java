@@ -11,6 +11,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.example.michael.bumpy.Globals.Globals;
 import com.example.michael.bumpy.Model.Driver;
 
 import org.apache.http.HttpResponse;
@@ -29,7 +30,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class MyAccidentsActivity extends AppCompatActivity {
-    private String mainUrl = "http://10.10.16.151:3000";
+    private String mainUrl = Globals.serverUrl;
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
@@ -46,7 +47,7 @@ public class MyAccidentsActivity extends AppCompatActivity {
     {
         InputStream inputStream = null;
         String result = "";
-        String serverUrl = mainUrl + "/user/" + Driver.getInstance().getId() + "/acc";
+        String serverUrl = mainUrl + "user/" + Driver.getInstance().getId() + "/acc";
 
         try {
 
@@ -94,14 +95,13 @@ public class MyAccidentsActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
 
         JSONObject result = null;
-        try {
 
+        try {
             result = new JSONObject(GetAccidentData());
             JSONArray arr = result.getJSONArray("acc");
             for (int i = 0; i < arr.length(); ++i) {
                 final JSONObject rec = arr.getJSONObject(i);
-                String loc = rec.getString("location");
-                String name = rec.getString("name");
+                String name = rec.getString("desc");
 
                 /* Create a new row to be added. */
                 TableRow tr = new TableRow(this);
@@ -115,14 +115,8 @@ public class MyAccidentsActivity extends AppCompatActivity {
 
                 tr.addView(nameView);
 
-                TextView locView = new TextView(this);
-                locView.setText(loc);
-                TableRow.LayoutParams params2 = new TableRow.LayoutParams(0, ActionBar.LayoutParams.WRAP_CONTENT, 1f);
-                locView.setLayoutParams(params2);
-                tr.addView(locView);
-
                 Button b2 = new Button(this);
-                b2.setText("Opp Pics");
+                b2.setText("Opp Driver");
                 b2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
         /* Add Button to row. */
                 b2.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +131,24 @@ public class MyAccidentsActivity extends AppCompatActivity {
                     }
                 });
                 tr.addView(b2);
+
+
+                Button b3 = new Button(this);
+                b3.setText("Witnesses");
+                b3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        /* Add Button to row. */
+                b3.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent intent = new Intent(MyAccidentsActivity.this, OppActivity.class);
+                        try {
+                            intent.putExtra("acc_id", rec.getString("acc_id"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        startActivity(intent);
+                    }
+                });
+                tr.addView(b3);
 
 
                 Button b = new Button(this);
@@ -160,12 +172,11 @@ public class MyAccidentsActivity extends AppCompatActivity {
 
             }
 
-        } catch (Throwable t) {
 
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-
-
-
 
 
         /* Add row to TableLayout. */

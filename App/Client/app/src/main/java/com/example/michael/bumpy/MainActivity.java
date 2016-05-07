@@ -22,7 +22,8 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements
         NfcAdapter.CreateNdefMessageCallback {
-    String myDriverId = "572dd43f8db0ddb6563c6d3a";
+    String DuduDriverId   = "572dd43f8db0ddb6563c6d3a";
+    String LeonidDriverId = "572dd9c8a89f5d2358443878";
     private Driver driver;
     private static final String TAG = "MainActivity";
 
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         driver = Driver.getInstance();
+        driver.setId(DuduDriverId);
 //        Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
 //        startActivity(newIntent);
         Intent intent = getIntent();

@@ -79,12 +79,34 @@ public class AccidentDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.accident_details);
 
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         Intent intent = getIntent();
-        String secondDriver = intent.getStringExtra("secondDriver");
+        secondDriver = intent.getStringExtra("secondDriver");
+
+        accident = new Accident(Driver.getInstance().getId(), secondDriver);
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("name", "bla");
+            jsonObject.put("location", "bla");
+            jsonObject.put("my_id", accident.getFirstDriverId());
+            jsonObject.put("opp_id", accident.getSecondDriverId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String result = Globals.postDataToServer(jsonObject, "acc");
+
+        if (result != null){
+            JSONObject js = null;
+            try {
+                js = new JSONObject(result);
+                accident.setId(js.getString("id"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
 //        addImageButton = (ImageButton) findViewById(R.id.addPhoto);
         imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
@@ -104,7 +126,7 @@ public class AccidentDetailsActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                String result = Globals.postDataToServer(jsonObject, "add/" + accident.getId().toString() + "/wit");
+                String result = Globals.postDataToServer(jsonObject, "acc/" + accident.getId() + "/wit");
 
                 jsonObject = new JSONObject();
                 try {
@@ -113,7 +135,7 @@ public class AccidentDetailsActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                result = Globals.postDataToServer(jsonObject, "add/" + accident.getId().toString() + "/desc");
+                result = Globals.postDataToServer(jsonObject, "acc/" + accident.getId() + "/desc");
 
                 finish();
             }
@@ -170,24 +192,7 @@ public class AccidentDetailsActivity extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
-        Intent intent = getIntent();
 
-        accident = new Accident(Driver.getInstance().getId(), secondDriver);
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("name", "bla");
-            jsonObject.put("location", "bla");
-            jsonObject.put("my_id", accident.getFirstDriverId());
-            jsonObject.put("opp_id", accident.getSecondDriverId());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String result = Globals.postDataToServer(jsonObject, "acc");
-
-        if (result != null){
-            accident.setId(result);
-        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -257,7 +262,13 @@ public class AccidentDetailsActivity extends AppCompatActivity {
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(view)
                 // Add action buttons
-                .setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                })
+                .setNeutralButton(R.string.add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         showAddDialog();

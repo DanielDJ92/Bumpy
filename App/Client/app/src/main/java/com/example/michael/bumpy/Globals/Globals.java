@@ -27,7 +27,7 @@ import java.io.InputStreamReader;
  * Created by Michael on 5/7/2016.
  */
 public class Globals {
-    final static String serverUrl = "http://10.10.16.151:3000/";
+    final public static String serverUrl = "http://10.10.16.151:3000/";
 
     public static String postDataToServer(JSONObject jsonObj, String uri) {
         InputStream inputStream = null;
