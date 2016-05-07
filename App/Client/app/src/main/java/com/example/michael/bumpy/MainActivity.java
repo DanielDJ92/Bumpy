@@ -22,6 +22,7 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements
         NfcAdapter.CreateNdefMessageCallback {
+    String myDriverId = "572dd43f8db0ddb6563c6d3a";
     private Driver driver;
     private static final String TAG = "MainActivity";
 
