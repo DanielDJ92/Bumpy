@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -44,11 +46,30 @@ public class EditDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_details);
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         if (Driver.getInstance().getId() != ""){
             try {
-                ((ImageButton)findViewById(R.id.addCarLicensePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/carLicense.jpeg"));
-                ((ImageButton)findViewById(R.id.addDrivingLicensePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/drivingLicense.jpeg"));
-                ((ImageButton)findViewById(R.id.addCarInsurancePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/carInsurance.jpeg"));
+                ((ImageButton)findViewById(R.id.addCarLicensePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/filescarLicense.jpeg"));
+                ((ImageButton)findViewById(R.id.addDrivingLicensePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/filesdrivingLicense.jpeg"));
+                ((ImageButton)findViewById(R.id.addCarInsurancePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/filescarInsurance.jpeg"));
+
+                String jsonData = Globals.GetDataFromServer("users/" + Driver.getInstance().getId());
+                JSONObject obj = null;
+                try {
+                    obj = new JSONObject(jsonData).getJSONObject("message");
+
+                    Driver.getInstance().setPhone(obj.getString("phone"));
+                    Driver.getInstance().setEmail(obj.getString("email"));
+                    Driver.getInstance().setName(obj.getString("name"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                ((EditText)findViewById(R.id.emailVal)).setText(Driver.getInstance().getEmail());
+                ((EditText)findViewById(R.id.nameVal)).setText(Driver.getInstance().getName());
+                ((EditText)findViewById(R.id.phoneVal)).setText(Driver.getInstance().getPhone());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -76,11 +97,15 @@ public class EditDetailsActivity extends AppCompatActivity {
         driver.setPhone(phone);
         driver.setEmail(email);
         driver.setName(name);
+        try {
+            JSONObject obj = new JSONObject(PostDataToServer(driver));
+            Driver.getInstance().setId(obj.getString("user"));
 
-        String driverID = PostDataToServer(driver);
-        Driver.getInstance().SaveLocally();
-        PostImagesToServer(drivingLicense, carInsurance, carLicense);
-
+            Driver.getInstance().SaveLocally();
+            PostImagesToServer(drivingLicense, carInsurance, carLicense);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void PostImagesToServer(Bitmap drivingLicense, Bitmap carInsurance, Bitmap carLicense) {
@@ -94,7 +119,7 @@ public class EditDetailsActivity extends AppCompatActivity {
         InputStream inputStream = null;
         Gson gson = new Gson();
         String result = "";
-        String serverUrl = "";
+        String serverUrl = mainUrl + "/users";
 
         try {
 
