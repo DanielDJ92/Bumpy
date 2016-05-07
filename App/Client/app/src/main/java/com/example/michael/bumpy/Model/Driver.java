@@ -10,6 +10,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -53,9 +54,8 @@ public class Driver {
                 line = br.readLine();
             }
 
-            String fileContent = sb.toString();
+            String fileContent = sb.toString().replaceAll("(\\r|\\n)", "");;
             this.id = fileContent;
-            FillDriverDetails();
 
         } catch (FileNotFoundException e) {
             this.id = "";
@@ -70,7 +70,7 @@ public class Driver {
         FileWriter writer = null;
         try {
             writer = new FileWriter(file);
-            writer.write(this.getId());
+            writer.write(this.id, 0, this.id.length());
         } catch (IOException e) {
             e.printStackTrace(); // I'd rather declare method with throws IOException and omit this catch.
         } finally {
@@ -119,7 +119,6 @@ public class Driver {
 
     private void FillDriverDetails()
     {
-        String jsonData = Globals.GetDataFromServer("/user/" + id);
 
     }
 }

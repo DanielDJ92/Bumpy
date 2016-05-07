@@ -51,10 +51,25 @@ public class EditDetailsActivity extends AppCompatActivity {
 
         if (Driver.getInstance().getId() != ""){
             try {
-                ((ImageButton)findViewById(R.id.addCarLicensePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/carLicense.jpeg"));
-                ((ImageButton)findViewById(R.id.addDrivingLicensePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/drivingLicense.jpeg"));
-                ((ImageButton)findViewById(R.id.addCarInsurancePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/carInsurance.jpeg"));
+                ((ImageButton)findViewById(R.id.addCarLicensePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/filescarLicense.jpeg"));
+                ((ImageButton)findViewById(R.id.addDrivingLicensePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/filesdrivingLicense.jpeg"));
+                ((ImageButton)findViewById(R.id.addCarInsurancePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/filescarInsurance.jpeg"));
 
+                String jsonData = Globals.GetDataFromServer("users/" + Driver.getInstance().getId());
+                JSONObject obj = null;
+                try {
+                    obj = new JSONObject(jsonData).getJSONObject("message");
+
+                    Driver.getInstance().setPhone(obj.getString("phone"));
+                    Driver.getInstance().setEmail(obj.getString("email"));
+                    Driver.getInstance().setName(obj.getString("name"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                ((EditText)findViewById(R.id.emailVal)).setText(Driver.getInstance().getEmail());
+                ((EditText)findViewById(R.id.nameVal)).setText(Driver.getInstance().getName());
+                ((EditText)findViewById(R.id.phoneVal)).setText(Driver.getInstance().getPhone());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -84,7 +99,8 @@ public class EditDetailsActivity extends AppCompatActivity {
         driver.setName(name);
         try {
             JSONObject obj = new JSONObject(PostDataToServer(driver));
-            String driverID = obj.getString("user");
+            Driver.getInstance().setId(obj.getString("user"));
+
             Driver.getInstance().SaveLocally();
             PostImagesToServer(drivingLicense, carInsurance, carLicense);
         } catch (JSONException e) {

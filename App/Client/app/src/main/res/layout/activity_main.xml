@@ -15,6 +15,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:src="@drawable/ic_launcher"
-        android:onClick="onClickListener" />
+        android:onClick="onClickListener"
+        android:background="@null" />
 
 </RelativeLayout>

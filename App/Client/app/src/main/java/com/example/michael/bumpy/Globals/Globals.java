@@ -15,6 +15,7 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -161,7 +162,15 @@ public class Globals {
     }
 
     public static Bitmap GetImageFromURL(String url) throws IOException {
-        String imageUrl = GetDataFromServer(url);
+        String imageUrlJson = GetDataFromServer(url);
+        JSONObject obj;
+        String imageUrl = "";
+        try {
+            obj = new JSONObject(imageUrlJson);
+            imageUrl = obj.getString("pic");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         HttpGet httpRequest = new HttpGet(serverUrl + imageUrl);
 
