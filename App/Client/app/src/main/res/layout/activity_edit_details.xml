@@ -8,5 +8,132 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.michael.bumpy.EditDetailsActivity">
+    <TextView
+        android:id="@+id/drivingLicenseCap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11pt"
+        android:padding="12dp"
+        android:text="Capture Driving License:"/>
 
+    <TextView
+        android:padding="12dp"
+        android:id="@+id/carLicenseCap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Capture Car License:"
+        android:textSize="11pt"
+        android:layout_below="@+id/drivingLicenseCap"/>
+
+    <ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/addDrivingLicensePhoto"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
+        android:layout_toRightOf="@+id/drivingLicenseCap"
+        android:src="@android:drawable/ic_input_add"
+        android:onClick="imageButtonListener"/>
+
+    <ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/addCarLicensePhoto"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
+        android:layout_below="@+id/drivingLicenseCap"
+        android:layout_toRightOf="@+id/drivingLicenseCap"
+        android:src="@android:drawable/ic_input_add"
+        android:onClick="imageButtonListener"/>
+
+    <TextView
+        android:padding="12dp"
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Capture Car Insurance:"
+        android:textSize="11pt"
+        android:layout_below="@+id/addCarLicensePhoto"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/addCarInsurancePhoto"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
+        android:src="@android:drawable/ic_input_add"
+        android:layout_alignBottom="@+id/textView"
+        android:layout_alignEnd="@+id/addCarLicensePhoto"
+        android:onClick="imageButtonListener"/>
+
+    <TextView
+        android:padding="12dp"
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name:"
+        android:textSize="11pt"
+        android:layout_below="@+id/addCarInsurancePhoto"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text=""
+        android:ems="10"
+        android:id="@+id/nameVal"
+        android:layout_below="@+id/textView"
+        android:layout_alignEnd="@+id/addCarInsurancePhoto" />
+
+
+    <TextView
+        android:padding="12dp"
+        android:id="@+id/phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone:"
+        android:textSize="11pt"
+        android:layout_below="@+id/nameVal"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:text=""
+        android:ems="10"
+        android:id="@+id/phoneVal"
+        android:layout_below="@+id/nameVal"
+        android:layout_alignStart="@+id/nameVal" />
+
+
+
+    <TextView
+        android:padding="12dp"
+        android:id="@+id/mail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mail:"
+        android:textSize="11pt"
+        android:layout_alignTop="@+id/emailVal"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:text=""
+        android:ems="10"
+        android:id="@+id/emailVal"
+        android:layout_below="@+id/phoneVal"
+        android:layout_alignStart="@+id/phoneVal" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:id="@+id/button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:onClick="onClickListener"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

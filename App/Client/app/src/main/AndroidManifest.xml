@@ -46,6 +46,8 @@
         <activity android:name=".AccidentDetailsActivity" />
         <activity android:name=".MyAccidentsActivity"></activity>
         <activity android:name=".EditDetailsActivity"></activity>
+        <activity android:name=".AccidentDet"></activity>
+        <activity android:name=".OppActivity"></activity>
     </application>
 
 </manifest>

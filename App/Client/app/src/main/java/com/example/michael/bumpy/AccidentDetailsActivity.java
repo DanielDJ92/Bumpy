@@ -54,7 +54,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class AccidentDetailsActivity extends AppCompatActivity {
-    private String serverUrl = "http://10.10.20.145:3000/acc";
+    private String serverUrl = "http://10.10.16.151:3000/acc";
     private Accident accident;
     private String secondDriver;
 

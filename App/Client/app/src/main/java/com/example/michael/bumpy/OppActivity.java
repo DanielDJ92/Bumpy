@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 public class OppActivity extends AppCompatActivity {
+    private String mainUrl = "http://10.10.16.151:3000";
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
@@ -40,7 +41,7 @@ public class OppActivity extends AppCompatActivity {
     {
         InputStream inputStream = null;
         String result = "";
-        String serverUrl = "http://10.10.20.145:3000/user/" + opp_id + "/pic";
+        String serverUrl = mainUrl + "/user/" + opp_id + "/pic";
 
         try {
 
@@ -99,7 +100,7 @@ public class OppActivity extends AppCompatActivity {
 
                 ImageView img = new ImageView(this);
 
-                URL url = new URL("http://10.10.20.145:3000/" + pic_id + ".jpg");
+                URL url = new URL(mainUrl + pic_id + ".jpg");
                 //try this url = "http://0.tqn.com/d/webclipart/1/0/5/l/4/floral-icon-5.jpg"
                 HttpGet httpRequest = null;
 

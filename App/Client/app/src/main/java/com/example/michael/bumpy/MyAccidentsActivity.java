@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class MyAccidentsActivity extends AppCompatActivity {
+    private String mainUrl = "http://10.10.16.151:3000";
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
@@ -45,7 +46,7 @@ public class MyAccidentsActivity extends AppCompatActivity {
     {
         InputStream inputStream = null;
         String result = "";
-        String serverUrl = "http://10.10.20.145:3000/user/" + Driver.getInstance().getId() + "/acc";
+        String serverUrl = mainUrl + "/user/" + Driver.getInstance().getId() + "/acc";
 
         try {
 

@@ -18,11 +18,12 @@ import android.view.View;
 import android.widget.Toast;
 import com.example.michael.bumpy.Model.Driver;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity implements
         NfcAdapter.CreateNdefMessageCallback {
     private Driver driver;
     private static final String TAG = "MainActivity";
-    private boolean nfcWorking;
 
     private NfcAdapter nfcAdapter;
 
@@ -48,9 +49,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        nfcWorking = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         driver = Driver.getInstance();
 //        Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
 //        startActivity(newIntent);
@@ -81,24 +83,23 @@ public class MainActivity extends AppCompatActivity implements
 
     public void onClickListener(View v)
     {
-        if (!nfcWorking) {
-            nfcWorking = true;
-            Log.d(TAG, "onCreate: ");
-            nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        Log.d(TAG, "onCreate: ");
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
-            if (nfcAdapter == null) {
-                Toast.makeText(MainActivity.this,
-                        "nfcAdapter==null, no NFC adapter exists",
-                        Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(MainActivity.this,
-                        "Touch a near device!",
-                        Toast.LENGTH_LONG).show();
-                try {
-                    nfcAdapter.setNdefPushMessageCallback(this, this);
-                } catch (Exception ex) {
+        if(nfcAdapter==null){
+            Toast.makeText(MainActivity.this,
+                    "nfcAdapter==null, no NFC adapter exists",
+                    Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText(MainActivity.this,
+                    "Touch a near device!",
+                    Toast.LENGTH_LONG).show();
+            try {
+                nfcAdapter.setNdefPushMessageCallback(this, this);
+            }
+            catch (Exception ex){
 
-                }
             }
         }
     }
