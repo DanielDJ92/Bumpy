@@ -37,6 +37,7 @@ public class OppActivity extends AppCompatActivity {
         return result;
 
     }
+
     protected String GetOppPics(String opp_id)
     {
         InputStream inputStream = null;
