@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity implements
 
 
         driver = Driver.getInstance();
-        Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
-        startActivity(newIntent);
+//        Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
+//        startActivity(newIntent);
         Intent intent = getIntent();
         String action = intent.getAction();
 
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements
 
             Intent newIntent2 = new Intent(this, AccidentDetailsActivity.class);
             newIntent2.putExtra("secondDriver", inMsg);
-            startActivity(newIntent);
+            startActivity(newIntent2);
             finish();
         }
     }
