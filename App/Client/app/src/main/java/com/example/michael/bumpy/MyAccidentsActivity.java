@@ -1,11 +1,17 @@
 package com.example.michael.bumpy;
 
+import android.content.Intent;
 import android.os.StrictMode;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
+
+import com.example.michael.bumpy.Model.Driver;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -13,6 +19,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -33,10 +41,11 @@ public class MyAccidentsActivity extends AppCompatActivity {
         return result;
 
     }
-    protected String GetAccidentData() {
+    protected String GetAccidentData()
+    {
         InputStream inputStream = null;
         String result = "";
-        String serverUrl = "http://10.10.20.145:3000/acc/";
+        String serverUrl = "http://10.10.20.145:3000/user/" + Driver.getInstance().getId() + "/acc";
 
         try {
 
@@ -76,28 +85,89 @@ public class MyAccidentsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_accidents);
+/* Find Tablelayout defined in main.xml */
+        TableLayout tl = (TableLayout) findViewById(R.id.accidentTable);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
         StrictMode.setThreadPolicy(policy);
 
+        JSONObject result = null;
+        try {
 
-        GetAccidentData();
+            result = new JSONObject(GetAccidentData());
+            JSONArray arr = result.getJSONArray("acc");
+            for (int i = 0; i < arr.length(); ++i) {
+                final JSONObject rec = arr.getJSONObject(i);
+                String loc = rec.getString("location");
+                String name = rec.getString("name");
 
-        /* Find Tablelayout defined in main.xml */
-
-        TableLayout tl = (TableLayout) findViewById(R.id.accidentTable);
-        /* Create a new row to be added. */
-        TableRow tr = new TableRow(this);
-        tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+                /* Create a new row to be added. */
+                TableRow tr = new TableRow(this);
+                tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
         /* Create a Button to be the row-content. */
-        Button b = new Button(this);
-        b.setText("Dynamic Button");
-        b.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+                TextView nameView = new TextView(this);
+                nameView.setText(name);
+                TableRow.LayoutParams params = new TableRow.LayoutParams(0, ActionBar.LayoutParams.WRAP_CONTENT, 1f);
+                nameView.setLayoutParams(params);
+
+                tr.addView(nameView);
+
+                TextView locView = new TextView(this);
+                locView.setText(loc);
+                TableRow.LayoutParams params2 = new TableRow.LayoutParams(0, ActionBar.LayoutParams.WRAP_CONTENT, 1f);
+                locView.setLayoutParams(params2);
+                tr.addView(locView);
+
+                Button b2 = new Button(this);
+                b2.setText("Opp Pics");
+                b2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
         /* Add Button to row. */
-        tr.addView(b);
+                b2.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent intent = new Intent(MyAccidentsActivity.this, OppActivity.class);
+                        try {
+                            intent.putExtra("opp_id", rec.getString("opp_id"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        startActivity(intent);
+                    }
+                });
+                tr.addView(b2);
+
+
+                Button b = new Button(this);
+                b.setText("Accident Pics");
+                b.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        /* Add Button to row. */
+                b.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent intent = new Intent(MyAccidentsActivity.this, AccidentDet.class);
+                        try {
+                            intent.putExtra("acc_id", rec.getString("my_id"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        startActivity(intent);
+                    }
+                });
+                tr.addView(b);
+                //tr.setBackgroundResource(R.drawable.sf_gradient_03);
+                tl.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+
+            }
+
+        } catch (Throwable t) {
+
+        }
+
+
+
+
+
         /* Add row to TableLayout. */
-        //tr.setBackgroundResource(R.drawable.sf_gradient_03);
-        tl.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+
     }
 }
