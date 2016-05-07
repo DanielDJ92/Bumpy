@@ -155,7 +155,9 @@ public class Globals {
     }
 
     public static Bitmap GetImageFromURL(String url) throws IOException {
-        HttpGet httpRequest = new HttpGet(url);
+        String imageUrl = GetDataFromServer(url);
+
+        HttpGet httpRequest = new HttpGet(serverUrl + imageUrl);
 
         HttpClient httpclient = new DefaultHttpClient();
         HttpResponse response = null;
@@ -189,7 +191,5 @@ public class Globals {
         inputStream.close();
         return result;
     }
-
-    //private
 }
 

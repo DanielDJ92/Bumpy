@@ -12,9 +12,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
@@ -62,6 +64,18 @@ public class Driver {
         } catch (IOException e) {
             e.printStackTrace();
             this.id = "";
+        }
+    }
+
+    public void SaveLocally(){
+        try(BufferedWriter br = new BufferedWriter(new FileWriter("driver.txt"))) {
+            StringBuilder sb = new StringBuilder();
+            br.write(this.id, 0, this.id.length());
+            br.close();
+
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

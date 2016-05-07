@@ -26,6 +26,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -76,13 +77,16 @@ public class EditDetailsActivity extends AppCompatActivity {
         driver.setEmail(email);
         driver.setName(name);
 
-        PostDataToServer(driver);
-        PostImagesToServer(drivingLicense,carInsurance,carLicense);
+        String driverID = PostDataToServer(driver);
+        Driver.getInstance().SaveLocally();
+        PostImagesToServer(drivingLicense, carInsurance, carLicense);
 
     }
 
     private void PostImagesToServer(Bitmap drivingLicense, Bitmap carInsurance, Bitmap carLicense) {
-
+        Globals.uploadFile(GetFileFromBitmap(drivingLicense, "drivingLicense.jpeg"));
+        Globals.uploadFile(GetFileFromBitmap(drivingLicense));
+        Globals.uploadFile(GetFileFromBitmap(drivingLicense));
     }
 
     protected String PostDataToServer(Driver driver) {
@@ -90,6 +94,7 @@ public class EditDetailsActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String result = "";
         String serverUrl = "";
+
         try {
 
             // 1. create HttpClient
@@ -147,6 +152,24 @@ public class EditDetailsActivity extends AppCompatActivity {
         inputStream.close();
         return result;
 
+    }
+
+    private File GetFileFromBitmap(Bitmap bitmap, String imageDesiredName){
+        FileOutputStream out;
+
+        try {
+            out = new FileOutputStream(getFilesDir() + imageDesiredName, false);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File file = new File(getFilesDir() + imageDesiredName);
+        return file;
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
