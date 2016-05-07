@@ -2,6 +2,7 @@ package com.example.michael.bumpy.Model;
 
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
+import android.os.Environment;
 
 import com.example.michael.bumpy.Globals.Globals;
 
@@ -30,9 +31,6 @@ public class Driver {
     private String phone;
     private static Driver instance;
     private String email;
-    private Bitmap driverLicense;
-    private Bitmap carInsurance;
-    private Bitmap carLicense;
 
     public static Driver getInstance() {
 
@@ -45,7 +43,7 @@ public class Driver {
     }
 
     private Driver(){
-        try(BufferedReader br = new BufferedReader(new FileReader( "driver.txt"))) {
+        try(BufferedReader br = new BufferedReader(new FileReader(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/driver.txt"))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 
@@ -68,14 +66,18 @@ public class Driver {
     }
 
     public void SaveLocally(){
-        try(BufferedWriter br = new BufferedWriter(new FileWriter("driver.txt"))) {
-            StringBuilder sb = new StringBuilder();
-            br.write(this.id, 0, this.id.length());
-            br.close();
-
-        } catch (FileNotFoundException e) {
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/driver.txt");
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(file);
+            writer.write(this.getId());
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // I'd rather declare method with throws IOException and omit this catch.
+        } finally {
+            if (writer != null) try
+            {
+                writer.close();
+            } catch (IOException ignore) {}
         }
     }
 
@@ -103,18 +105,6 @@ public class Driver {
         this.name = name;
     }
 
-    public void setDriverLicense(Bitmap driverLicense) {
-        this.driverLicense = driverLicense;
-    }
-
-    public void setCarInsurance(Bitmap carInsurance) {
-        this.carInsurance = carInsurance;
-    }
-
-    public void setCarLicense(Bitmap carLicense) {
-        this.carLicense = carLicense;
-    }
-
     public String getName() {
         return name;
     }
@@ -127,20 +117,9 @@ public class Driver {
         return email;
     }
 
-    public Bitmap getDriverLicense() {
-        return driverLicense;
-    }
-
-    public Bitmap getCarInsurance() {
-        return carInsurance;
-    }
-
-    public Bitmap getCarLicense() {
-        return carLicense;
-    }
-
     private void FillDriverDetails()
     {
         String jsonData = Globals.GetDataFromServer("/user/" + id);
+
     }
 }
