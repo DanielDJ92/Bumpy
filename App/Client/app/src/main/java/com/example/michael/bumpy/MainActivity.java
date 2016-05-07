@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         driver = Driver.getInstance();
-//        Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
-//        startActivity(newIntent);
+        Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
+        startActivity(newIntent);
         Intent intent = getIntent();
         String action = intent.getAction();
 
@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity implements
             NdefRecord NdefRecord_0 = inNdefRecords[0];
             String inMsg = new String(NdefRecord_0.getPayload());
 
-            Intent newIntent = new Intent(this, AccidentDetailsActivity.class);
-            newIntent.putExtra("secondDriver", inMsg);
+            Intent newIntent2 = new Intent(this, AccidentDetailsActivity.class);
+            newIntent2.putExtra("secondDriver", inMsg);
             startActivity(newIntent);
             finish();
         }

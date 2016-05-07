@@ -43,7 +43,9 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".AccidentDetailsActivity" />
+        <activity android:name=".AccidentDetailsActivity"
+                    android:screenOrientation="portrait"
+                    android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity android:name=".MyAccidentsActivity"></activity>
         <activity android:name=".EditDetailsActivity"></activity>
     </application>
