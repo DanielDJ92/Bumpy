@@ -98,8 +98,6 @@ public class AccidentDetailsActivity extends AppCompatActivity {
 
                 JSONObject jsonObject = new JSONObject();
                 try {
-//                    jsonObject.put("description", ((EditText)findViewById(R.id.description)).getText().toString());
-
                     Gson g = new Gson();
                     String s = g.toJson(witnessesList);
                     jsonObject.put("witlist", s);
@@ -107,6 +105,16 @@ public class AccidentDetailsActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 String result = Globals.postDataToServer(jsonObject, "add/" + accident.getId().toString() + "/wit");
+
+                jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("desc", ((EditText)findViewById(R.id.description)).getText().toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                result = Globals.postDataToServer(jsonObject, "add/" + accident.getId().toString() + "/desc");
+
                 finish();
             }
         });
@@ -164,7 +172,7 @@ public class AccidentDetailsActivity extends AppCompatActivity {
         super.onResume();
         Intent intent = getIntent();
 
-        Accident accident = new Accident(Driver.getInstance().getId(), secondDriver);
+        accident = new Accident(Driver.getInstance().getId(), secondDriver);
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -187,8 +195,9 @@ public class AccidentDetailsActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             FileOutputStream out = null;
+            final String fileUri = "/new.jpeg";
             try {
-                out = new FileOutputStream(getFilesDir() + "/new.jpeg", false);
+                out = new FileOutputStream(getFilesDir() + fileUri, false);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -202,7 +211,8 @@ public class AccidentDetailsActivity extends AppCompatActivity {
 
             Thread thread = new Thread(new Runnable(){
                 public void run(){
-                    uploadFile();
+                    File file = new File(getFilesDir() + fileUri);
+                    String result = Globals.uploadFile(file);
                 }
             });
             thread.start();
@@ -213,45 +223,6 @@ public class AccidentDetailsActivity extends AppCompatActivity {
             ImageButton ib = (ImageButton) imagesList.get(imagesList.size() - 1);
             ((ViewGroup) ib.getParent()).removeView(ib);
         }
-    }
-
-    private String uploadFile() {
-        String responseString = null;
-
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(serverUrl + "/a/pic");
-
-//        try {
-            MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-
-            File sourceFile = new File(getFilesDir() + "/new.jpeg");
-            //File sourceFile = new File("/storage/emulated/0/Android/data/com.hutchgames.mud/files/al/1454455321_768x1024.jpeg");
-
-            // Adding file data to http body
-            FileBody body = new FileBody(sourceFile);
-            entity.addPart("file", body);
-
-            httppost.setEntity(entity);
-
-            // Making server call
-            try {
-                HttpResponse response = httpclient.execute(httppost);
-                HttpEntity r_entity = response.getEntity();
-
-                int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode == 200) {
-                    // Server response
-                    responseString = EntityUtils.toString(r_entity);
-                } else {
-                    responseString = "Error occurred! Http Status Code: "
-                            + statusCode;
-                }
-            }
-            catch (Exception ex) {
-                String a = ex.getMessage();
-            }
-
-        return responseString;
     }
 
     public void showListDialog() {

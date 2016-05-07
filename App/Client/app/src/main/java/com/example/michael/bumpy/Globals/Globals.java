@@ -1,13 +1,19 @@
 package com.example.michael.bumpy.Globals;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -67,6 +73,43 @@ public class Globals {
         }
 
         return result;
+    }
+
+    public static String uploadFile(File file) {
+        String responseString = null;
+
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost(serverUrl + "/a/pic");
+
+//        try {
+        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+        //File sourceFile = new File("/storage/emulated/0/Android/data/com.hutchgames.mud/files/al/1454455321_768x1024.jpeg");
+
+        // Adding file data to http body
+        FileBody body = new FileBody(file);
+        entity.addPart("file", body);
+
+        httppost.setEntity(entity);
+
+        // Making server call
+        try {
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity r_entity = response.getEntity();
+
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200) {
+                // Server response
+                responseString = EntityUtils.toString(r_entity);
+            } else {
+                responseString = "Error occurred! Http Status Code: "
+                        + statusCode;
+            }
+        }
+        catch (Exception ex) {
+            String a = ex.getMessage();
+        }
+
+        return responseString;
     }
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
