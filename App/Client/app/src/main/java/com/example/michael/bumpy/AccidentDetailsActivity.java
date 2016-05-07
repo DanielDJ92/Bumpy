@@ -164,7 +164,7 @@ public class AccidentDetailsActivity extends AppCompatActivity {
         super.onResume();
         Intent intent = getIntent();
 
-        Accident accident = new Accident(Driver.getInstance().getId(), secondDriver);
+        accident = new Accident(Driver.getInstance().getId(), secondDriver);
 
         JSONObject jsonObject = new JSONObject();
         try {

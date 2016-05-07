@@ -3,6 +3,8 @@ package com.example.michael.bumpy.Model;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 
+import com.example.michael.bumpy.Globals.Globals;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -52,11 +54,14 @@ public class Driver {
             }
 
             String fileContent = sb.toString();
-            int driverID = Integer.getInteger(fileContent);
+            this.id = fileContent;
+            FillDriverDetails();
 
         } catch (FileNotFoundException e) {
+            this.id = "";
         } catch (IOException e) {
             e.printStackTrace();
+            this.id = "";
         }
     }
 
@@ -122,39 +127,6 @@ public class Driver {
 
     private void FillDriverDetails()
     {
-        InputStream inputStream = null;
-        String result = "";
-        String serverUrl = mainUrl + "/user/" + opp_id + "/pic";
-
-        try {
-
-            // 1. create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
-
-            // 2. make POST request to the given URL
-            HttpGet http = new HttpGet(serverUrl);
-
-            // 7. Set some headers to inform server about the type of the content
-            http.setHeader("Accept", "application/json");
-            http.setHeader("Content-type", "application/json");
-
-            // 8. Execute POST request to the given URL
-            HttpResponse httpResponse = httpclient.execute(http);
-
-            // 9. receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
-
-            // 10. convert inputstream to string
-            if(inputStream != null) {
-                result = convertInputStreamToString(inputStream);
-            }
-            else {
-                result = "Did not work!";
-            }
-        }
-        catch (Exception e)
-        {
-
-        }
+        String jsonData = Globals.GetDataFromServer("/user/" + id);
     }
 }

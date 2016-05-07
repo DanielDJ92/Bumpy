@@ -102,7 +102,6 @@ public class OppActivity extends AppCompatActivity {
                 ImageView img = new ImageView(this);
 
                 URL url = new URL(mainUrl + pic_id + ".jpg");
-                //try this url = "http://0.tqn.com/d/webclipart/1/0/5/l/4/floral-icon-5.jpg"
                 HttpGet httpRequest = null;
 
                 httpRequest = new HttpGet(url.toURI());

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.example.michael.bumpy.Globals.Globals;
 import com.example.michael.bumpy.Model.Accident;
 import com.example.michael.bumpy.Model.Driver;
 import com.google.gson.Gson;
@@ -41,6 +42,16 @@ public class EditDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_details);
+
+        if (Driver.getInstance().getId() != ""){
+            try {
+                ((ImageButton)findViewById(R.id.addCarLicensePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/carLicense.jpeg"));
+                ((ImageButton)findViewById(R.id.addDrivingLicensePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/drivingLicense.jpeg"));
+                ((ImageButton)findViewById(R.id.addCarInsurancePhoto)).setImageBitmap(Globals.GetImageFromURL("user/" + Driver.getInstance().getId() + "/pic/carInsurance.jpeg"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void imageButtonListener(View v) {
